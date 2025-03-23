@@ -14,7 +14,7 @@ export const createTable = sqliteTableCreator(
   (name) => `drive-tutorial_${name}`,
 );
 
-export const folders = createTable(
+export const folders_table = createTable(
   "folders_table",
   {
     id: int("id").primaryKey({ autoIncrement: true }),
@@ -26,7 +26,7 @@ export const folders = createTable(
   },
 );
 
-export const files = createTable(
+export const files_table = createTable(
   "files_table",
   {
     id: int("id").primaryKey({ autoIncrement: true }),
