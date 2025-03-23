@@ -1,3 +1,4 @@
+import "server-only";
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 import { index, sqliteTableCreator } from "drizzle-orm/sqlite-core";
