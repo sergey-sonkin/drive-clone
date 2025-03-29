@@ -1,6 +1,3 @@
-import "server-only";
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
 import { index, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 import { int, text } from "drizzle-orm/sqlite-core";
 
@@ -31,7 +28,7 @@ export const files_table = createTable(
   {
     id: int("id").primaryKey({ autoIncrement: true }),
     name: text("name").notNull(),
-    size: int("id").notNull(),
+    size: int("size").notNull(),
     url: text("url").notNull(),
     parent: int("parent").notNull(),
   },
@@ -39,3 +36,6 @@ export const files_table = createTable(
     return [index("parent_of_file_index").on(t.parent)];
   },
 );
+
+export type DB_FileType = typeof files_table.$inferSelect;
+export type DB_FolderType = typeof folders_table.$inferSelect;
