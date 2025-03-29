@@ -11,6 +11,6 @@
 ## 2025-03-29
 
 - [ ] Real homepage
-- [ ] Upload files to the right folder
+- [x] Upload files to the right folder
 - [ ] Delete files button
-- [ ] Allow files that aren't images to be uploaded
+- [x] Allow files that aren't images to be uploaded

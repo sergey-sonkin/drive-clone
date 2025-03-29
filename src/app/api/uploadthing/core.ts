@@ -7,9 +7,9 @@ import { MUTATIONS, QUERIES } from "~/server/db/queries";
 const f = createUploadthing();
 
 export const ourFileRouter = {
-  imageUploader: f({
-    image: {
-      maxFileSize: "4MB",
+  driveUploader: f({
+    blob: {
+      maxFileSize: "32MB",
       maxFileCount: 1,
     },
   })
