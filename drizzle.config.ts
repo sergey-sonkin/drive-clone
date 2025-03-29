@@ -8,5 +8,5 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["drive-tutorial_*"],
+  tablesFilter: ["drive_tutorial_*"],
 } satisfies Config;

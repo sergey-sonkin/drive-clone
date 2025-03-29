@@ -1,35 +1,47 @@
-import { db } from "~/server/db";
+import { auth } from "@clerk/nextjs/server";
 import { mockFiles, mockFolders } from "~/lib/mock-data";
+import { db } from "~/server/db";
 import { files_table, folders_table } from "~/server/db/schema";
 
-export default function SandboxPage() {
+const form_action = async () => {
+  "use server";
+  const user = await auth();
+  if (!user.userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const result = await db
+    .insert(folders_table)
+    .values({ name: "root", ownerId: user.userId, parent: null })
+    .execute();
+
+  const rootFolderId = Number(result.lastInsertRowid);
+
+  const insertableFolders = mockFolders.map((folder) => ({
+    ownerId: user.userId,
+
+    name: folder.name,
+    parent: rootFolderId,
+  }));
+
+  const insertableFiles = mockFiles.map((file) => ({
+    ownerId: user.userId,
+
+    name: file.name,
+    size: file.size,
+    url: file.url,
+    parent: rootFolderId,
+  }));
+
+  await db.insert(folders_table).values(insertableFolders);
+  await db.insert(files_table).values(insertableFiles);
+};
+
+export default function Sandbox() {
   return (
-    <div className="flex flex-col gap-4">
-      Seed Function
-      <form
-        action={async () => {
-          "use server";
-          const folderInsert = await db.insert(folders_table).values(
-            mockFolders.map((folder, index) => ({
-              id: index + 1,
-              name: folder.name,
-              parent: index !== 0 ? 1 : null,
-            })),
-          );
-          console.log(folderInsert);
-          const fileInsert = await db.insert(files_table).values(
-            mockFiles.map((file, index) => ({
-              id: index + 1,
-              name: file.name,
-              size: 5000,
-              url: file.url ?? "test.png",
-              parent: (index % 3) + 1,
-            })),
-          );
-          console.log(fileInsert);
-        }}
-      >
-        <button type="submit">Seed</button>
+    <div>
+      <form action={form_action}>
+        <button type="submit">Create file</button>
       </form>
     </div>
   );

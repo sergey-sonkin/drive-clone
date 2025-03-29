@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { index, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 import { int, text } from "drizzle-orm/sqlite-core";
 
@@ -8,32 +9,56 @@ import { int, text } from "drizzle-orm/sqlite-core";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = sqliteTableCreator(
-  (name) => `drive-tutorial_${name}`,
-);
-
-export const folders_table = createTable(
-  "folders_table",
-  {
-    id: int("id").primaryKey({ autoIncrement: true }),
-    name: text("name").notNull(),
-    parent: int("parent"),
-  },
-  (t) => {
-    return [index("parent_of_folder_index").on(t.parent)];
-  },
+  (name) => `drive_tutorial_${name}`,
 );
 
 export const files_table = createTable(
   "files_table",
   {
     id: int("id").primaryKey({ autoIncrement: true }),
+    ownerId: text("owner_id").notNull(),
+
     name: text("name").notNull(),
     size: int("size").notNull(),
     url: text("url").notNull(),
     parent: int("parent").notNull(),
+
+    created_at: text("created_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+    updated_at: text("updated_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
   },
   (t) => {
-    return [index("parent_of_file_index").on(t.parent)];
+    return [
+      index("parent_of_file_index").on(t.parent),
+      index("owner_of_file_index").on(t.ownerId),
+    ];
+  },
+);
+
+export const folders_table = createTable(
+  "folders_table",
+  {
+    id: int("id").primaryKey({ autoIncrement: true }),
+    ownerId: text("owner_id").notNull(),
+
+    name: text("name").notNull(),
+    parent: int("parent"),
+
+    created_at: text("created_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+    updated_at: text("updated_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => {
+    return [
+      index("parent_of_folder_index").on(t.parent),
+      index("owner_of_folder_index").on(t.ownerId),
+    ];
   },
 );
 
