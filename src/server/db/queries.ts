@@ -58,23 +58,25 @@ export const QUERIES = {
   },
 
   getRootFolderForUser: async function (userId: string) {
-    const rootFolder = await db
+    return await db
       .select()
       .from(foldersSchema)
       .where(
         and(isNull(foldersSchema.parent), eq(foldersSchema.ownerId, userId)),
       )
       .get();
-    if (!rootFolder) {
-      throw new Error("Root folder not found");
-    }
-    return rootFolder;
   },
 };
 
 export const MUTATIONS = {
   createFile: async function (input: {
-    file: { name: string; size: number; url: string; parent: number };
+    file: {
+      name: string;
+      size: number;
+      url: string;
+      parent: number;
+      type: string;
+    };
     userId: string;
     utKey: string;
   }) {

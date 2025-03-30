@@ -13,7 +13,7 @@
 
 ## TODO
 
-- [ ] Correct filetypes
+- [x] Correct filetypes
 - [ ] Folder creations (Server action w/ name + parentID)
 - [ ] Folder rename
 - [ ] Folder deletions (Implement -rf by collecting all items then 1 delete)
@@ -24,3 +24,5 @@
 - [ ] File view page
 - [ ] Toasts!
 - [ ] Gray out a row while it's being deleted
+
+- [ ] Deploy with sst/opennext

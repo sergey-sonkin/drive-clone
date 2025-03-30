@@ -21,6 +21,7 @@ export const files_table = createTable(
 
     name: text("name").notNull(),
     size: int("size").notNull(),
+    type: text("type").notNull().default(""),
 
     url: text("url").notNull(),
     parent: int("parent").notNull(),
