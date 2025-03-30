@@ -5,7 +5,7 @@ import {
   files_table as filesSchema,
   folders_table as foldersSchema,
 } from "~/server/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 export const QUERIES = {
   getAllParentsForFolder: async function (folderId: number) {
@@ -56,6 +56,20 @@ export const QUERIES = {
       .where(eq(filesSchema.id, fileId))
       .get();
   },
+
+  getRootFolderForUser: async function (userId: string) {
+    const rootFolder = await db
+      .select()
+      .from(foldersSchema)
+      .where(
+        and(isNull(foldersSchema.parent), eq(foldersSchema.ownerId, userId)),
+      )
+      .get();
+    if (!rootFolder) {
+      throw new Error("Root folder not found");
+    }
+    return rootFolder;
+  },
 };
 
 export const MUTATIONS = {
@@ -68,6 +82,21 @@ export const MUTATIONS = {
     return await db
       .insert(filesSchema)
       .values({ ...input.file, ownerId: input.userId, utKey: input.utKey });
+  },
+
+  createFolder: async function (input: {
+    folder: { name: string; parent: number | null };
+    userId: string;
+  }) {
+    const result = await db
+      .insert(foldersSchema)
+      .values({
+        name: input.folder.name,
+        parent: input.folder.parent,
+        ownerId: input.userId,
+      })
+      .execute();
+    return Number(result.lastInsertRowid);
   },
 
   deleteFile: async function (fileId: number) {
