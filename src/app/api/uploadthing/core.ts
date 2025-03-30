@@ -43,6 +43,7 @@ export const ourFileRouter = {
           parent: metadata.folderId,
         },
         userId: metadata.userId,
+        utKey: file.key,
       });
       console.log(fileInsert);
 

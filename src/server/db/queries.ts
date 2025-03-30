@@ -5,7 +5,7 @@ import {
   files_table as filesSchema,
   folders_table as foldersSchema,
 } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export const QUERIES = {
   getAllParentsForFolder: async function (folderId: number) {
@@ -48,16 +48,35 @@ export const QUERIES = {
       .where(eq(filesSchema.parent, folderId))
       .orderBy(filesSchema.id);
   },
+
+  getFileById: async function (fileId: number) {
+    return await db
+      .select()
+      .from(filesSchema)
+      .where(eq(filesSchema.id, fileId))
+      .get();
+  },
 };
 
 export const MUTATIONS = {
   createFile: async function (input: {
     file: { name: string; size: number; url: string; parent: number };
     userId: string;
+    utKey: string;
   }) {
     console.log("Creating file with input:", input);
     return await db
       .insert(filesSchema)
-      .values({ ...input.file, ownerId: input.userId });
+      .values({ ...input.file, ownerId: input.userId, utKey: input.utKey });
+  },
+
+  deleteFile: async function (fileId: number) {
+    return await db.delete(filesSchema).where(eq(filesSchema.id, fileId));
+  },
+
+  deleteUsersFile: async function (fileId: number, userId: string) {
+    return await db
+      .delete(filesSchema)
+      .where(and(eq(filesSchema.id, fileId), eq(filesSchema.ownerId, userId)));
   },
 };

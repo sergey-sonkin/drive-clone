@@ -17,9 +17,11 @@ export const files_table = createTable(
   {
     id: int("id").primaryKey({ autoIncrement: true }),
     ownerId: text("owner_id").notNull(),
+    utKey: text("ut_key").notNull(),
 
     name: text("name").notNull(),
     size: int("size").notNull(),
+
     url: text("url").notNull(),
     parent: int("parent").notNull(),
 

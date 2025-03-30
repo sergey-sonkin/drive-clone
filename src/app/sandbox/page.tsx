@@ -26,6 +26,7 @@ const form_action = async () => {
 
   const insertableFiles = mockFiles.map((file) => ({
     ownerId: user.userId,
+    utKey: "sandbox_data",
 
     name: file.name,
     size: file.size,
