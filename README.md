@@ -10,7 +10,3 @@
 - [x] Make sure sort order is consistent
 - [x] Add delete
 - [ ] Real homepage + onboarding
-
-## 2025/03/29
-
-- [ ] Debug why page renders twice

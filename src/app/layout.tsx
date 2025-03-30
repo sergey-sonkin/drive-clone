@@ -21,10 +21,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
-      <PostHogProvider>{children}</PostHogProvider>
-      <html lang="en" className={`${geist.variable}`}>
-        <body>{children}</body>
-      </html>
+      <PostHogProvider>
+        <html lang="en" className={`${geist.variable}`}>
+          <body>{children}</body>
+        </html>
+      </PostHogProvider>
     </ClerkProvider>
   );
 }
