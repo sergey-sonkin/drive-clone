@@ -7,7 +7,7 @@ import {
 import Link from "next/link";
 import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
 import { Button } from "~/components/ui/button";
-import { deleteFile } from "~/server/actions";
+import { deleteFile, renameFile } from "~/server/actions";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -22,10 +22,94 @@ async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function DeleteMenuItem({
+  file,
+  onSuccess,
+}: {
+  file: DB_FileType;
+  onSuccess: () => void;
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      setIsDeleting(true);
+      await deleteFile(file.id);
+      setIsDeleting(false);
+      onSuccess();
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <DropdownMenuItem disabled={isDeleting} onClick={handleDelete}>
+      {isDeleting ? (
+        <>
+          <span className="inline-flex h-4 w-4 animate-spin items-center justify-center rounded-full border-2 border-gray-300 border-t-blue-600"></span>
+          Deleting...
+        </>
+      ) : (
+        <>
+          <Trash2Icon className="h-4 w-4" />
+          Delete
+        </>
+      )}
+    </DropdownMenuItem>
+  );
+}
+
+function RenameFileItem({
+  file,
+  onSuccess,
+}: {
+  file: DB_FileType;
+  onSuccess: () => void;
+}) {
+  const [isRenaming, setIsRenaming] = useState(false);
+
+  const handleRename = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      setIsRenaming(true);
+      await renameFile(file.id, "New File Name");
+      setIsRenaming(false);
+      onSuccess();
+    } catch (error) {
+      console.error("Error renaming file:", error);
+      setIsRenaming(false);
+    }
+  };
+
+  return (
+    <DropdownMenuItem disabled={isRenaming} onClick={handleRename}>
+      {isRenaming ? (
+        <>
+          <span className="inline-flex h-4 w-4 animate-spin items-center justify-center rounded-full border-2 border-gray-300 border-t-blue-600"></span>
+          Renaming ...
+        </>
+      ) : (
+        <>
+          <SquarePen className="h-4 w-4" />
+          Rename
+        </>
+      )}
+    </DropdownMenuItem>
+  );
+}
+
 function EditFileDropDown(props: { file: DB_FileType }) {
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleDeleteSuccess = () => {
+    setIsOpen(false);
+    router.refresh();
+  };
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -34,44 +118,8 @@ function EditFileDropDown(props: { file: DB_FileType }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            disabled={isDeleting}
-            onClick={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              try {
-                setIsDeleting(true);
-                await deleteFile(props.file.id);
-                setIsOpen(false);
-                setIsDeleting(false);
-                router.refresh();
-              } catch (error) {
-                console.error("Error deleting file:", error);
-                setIsDeleting(false);
-              }
-            }}
-          >
-            {isDeleting ? (
-              <>
-                <span className="inline-flex h-4 w-4 animate-spin items-center justify-center rounded-full border-2 border-gray-300 border-t-blue-600"></span>
-                Deleting...
-              </>
-            ) : (
-              <>
-                <Trash2Icon className="h-4 w-4" />
-                Delete
-              </>
-            )}
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            <SquarePen className="h-4 w-4" />
-            Rename
-          </DropdownMenuItem>
+          <DeleteMenuItem file={props.file} onSuccess={handleDeleteSuccess} />
+          <RenameFileItem file={props.file} onSuccess={handleDeleteSuccess} />
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -105,19 +153,6 @@ export function FileRow(props: { file: DB_FileType }) {
         <div className="col-span-1 text-gray-400">
           <EditFileDropDown file={file} />
         </div>
-        {/* <div className="col-span-1 text-gray-400">
-          <Button
-            variant="destructive"
-            size="sm"
-            aria-label="Delete file"
-            onClick={async () => {
-              await deleteFile(file.id);
-              router.refresh();
-            }}
-          >
-            <Trash2Icon />
-          </Button>
-        </div> */}
       </div>
     </li>
   );
