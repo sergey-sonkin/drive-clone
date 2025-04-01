@@ -58,11 +58,21 @@ export default function DriveContents(props: {
             </div>
           </div>
           <ul>
-            {props.folders.map((folder) => (
-              <FolderRow key={folder.id} folder={folder} />
+            {props.folders.map((folder, index) => (
+              <FolderRow
+                key={folder.id}
+                folder={folder}
+                isLast={
+                  index === props.folders.length - 1 && props.files.length === 0
+                }
+              />
             ))}
-            {props.files.map((file) => (
-              <FileRow key={file.id} file={file} />
+            {props.files.map((file, index) => (
+              <FileRow
+                key={file.id}
+                file={file}
+                isLast={index === props.files.length - 1}
+              />
             ))}
           </ul>
         </div>

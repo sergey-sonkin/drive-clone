@@ -1,14 +1,20 @@
 import {
-  Folder as FolderIcon,
   FileIcon,
-  Trash2Icon,
+  Folder as FolderIcon,
   SquarePen,
+  Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
-import { Button } from "~/components/ui/button";
-import { deleteFile, renameFile } from "~/server/actions";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,16 +22,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { deleteFile, renameFile } from "~/server/actions";
+import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -174,13 +174,13 @@ function EditFileDropDown(props: { file: DB_FileType }) {
   );
 }
 
-export function FileRow(props: { file: DB_FileType }) {
-  const { file } = props;
+export function FileRow(props: { file: DB_FileType; isLast?: boolean }) {
+  const { file, isLast } = props;
 
   return (
     <li
       key={file.id}
-      className="hover:bg-gray-750 border-b border-gray-700 px-6 py-4"
+      className={`hover:bg-gray-750 px-6 py-4 ${isLast ? "" : "border-b border-gray-700"}`}
     >
       <div className="grid grid-cols-12 items-center gap-4">
         <div className="col-span-6 flex items-center">
@@ -206,12 +206,12 @@ export function FileRow(props: { file: DB_FileType }) {
   );
 }
 
-export function FolderRow(props: { folder: DB_FolderType }) {
-  const { folder } = props;
+export function FolderRow(props: { folder: DB_FolderType; isLast?: boolean }) {
+  const { folder, isLast } = props;
   return (
     <li
       key={folder.id}
-      className="hover:bg-gray-750 border-b border-gray-700 px-6 py-4"
+      className={`hover:bg-gray-750 px-6 py-4 ${isLast ? "" : "border-b border-gray-700"}`}
     >
       <div className="grid grid-cols-12 items-center gap-4">
         <div className="col-span-6 flex items-center">
