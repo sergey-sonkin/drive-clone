@@ -17,6 +17,15 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -70,14 +79,21 @@ function RenameFileItem({
   onSuccess: () => void;
 }) {
   const [isRenaming, setIsRenaming] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newFileName, setNewFileName] = useState(file.name);
 
-  const handleRename = async (e: React.MouseEvent) => {
+  const handleOpenRenameDialog = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setIsDialogOpen(true);
+  };
+
+  const handleRename = async () => {
     try {
       setIsRenaming(true);
-      await renameFile(file.id, "New File Name");
+      await renameFile(file.id, newFileName);
       setIsRenaming(false);
+      setIsDialogOpen(false);
       onSuccess();
     } catch (error) {
       console.error("Error renaming file:", error);
@@ -86,19 +102,51 @@ function RenameFileItem({
   };
 
   return (
-    <DropdownMenuItem disabled={isRenaming} onClick={handleRename}>
-      {isRenaming ? (
-        <>
-          <span className="inline-flex h-4 w-4 animate-spin items-center justify-center rounded-full border-2 border-gray-300 border-t-blue-600"></span>
-          Renaming ...
-        </>
-      ) : (
-        <>
-          <SquarePen className="h-4 w-4" />
-          Rename
-        </>
-      )}
-    </DropdownMenuItem>
+    <>
+      <DropdownMenuItem onClick={handleOpenRenameDialog}>
+        <SquarePen className="h-4 w-4" />
+        Rename
+      </DropdownMenuItem>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Rename File</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={newFileName}
+                onChange={(e) => setNewFileName(e.target.value)}
+                className="col-span-3"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleRename();
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleRename} disabled={isRenaming}>
+              {isRenaming ? (
+                <>
+                  <span className="inline-flex h-4 w-4 animate-spin items-center justify-center rounded-full border-2 border-gray-300 border-t-blue-600"></span>
+                  Saving...
+                </>
+              ) : (
+                "Save changes"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
