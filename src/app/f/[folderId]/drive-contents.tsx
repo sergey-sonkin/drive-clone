@@ -20,7 +20,7 @@ export default function DriveContents(props: {
   return (
     <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-5 flex h-10 items-center justify-between">
           <div className="flex items-center">
             <Link
               href={"/f/" + rootId}
@@ -40,9 +40,9 @@ export default function DriveContents(props: {
               </div>
             ))}
           </div>
-          <div>
+          <div className="flex h-8 items-center">
             <SignedOut>
-              <SignInButton />
+              <SignInButton mode="modal" />
             </SignedOut>
             <SignedIn>
               <UserButton />

@@ -15,6 +15,7 @@
 
 - [x] Correct filetypes
 - [x] File deletion animation
+- [x] Fix header resizing
 
 ## TODO
 
@@ -23,7 +24,6 @@
 - [ ] Folder deletions (Implement -rf by collecting all items then 1 delete)
 - [ ] Better access control (check if someone is owner before showing folder page if someone is linked to a drive they don't own, send to sign-in!)
 - [ ] File rename
-- [ ] Fix header resizing
 - [ ] Make upload button prettier
 - [ ] File view page
 - [ ] Toasts!
