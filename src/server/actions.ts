@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 
 const utapi = new UTApi();
 
-export async function deleteFile(fileId: number) {
+async function safelyGetFile(fileId: number) {
   const session = await auth();
   const file = await QUERIES.getFileById(fileId);
   if (!file) {
@@ -16,13 +16,29 @@ export async function deleteFile(fileId: number) {
   if (file.ownerId !== session.userId) {
     throw new Error("File not found"); // User shouldn't know if file exists
   }
+  return file;
+}
+
+export async function renameFile(fileId: number, newName: string) {
+  const file = await safelyGetFile(fileId);
+
+  const utRenamePromise = utapi.renameFiles({
+    fileKey: file.utKey,
+    newName: newName,
+  });
+  const dbRenamePromise = MUTATIONS.renameFile(fileId, newName);
+  await Promise.all([utRenamePromise, dbRenamePromise]);
+
+  return { success: true };
+}
+
+export async function deleteFile(fileId: number) {
+  const file = await safelyGetFile(fileId);
+
   const utDelete = utapi.deleteFiles(file.utKey);
   const dbDelete = MUTATIONS.deleteFile(fileId);
 
   await Promise.all([utDelete, dbDelete]);
 
-  // // Refresh the page for user without having to calc route or do another request
-  // const c = await cookies();
-  // c.set("force-refresh", JSON.stringify(Math.random()));
   return { success: true };
 }

@@ -11,9 +11,13 @@
 - [x] Add delete
 - [x] Homepage + onboarding
 
-## TODO
+## Additional work
 
 - [x] Correct filetypes
+- [x] File deletion animation
+
+## TODO
+
 - [ ] Folder creations (Server action w/ name + parentID)
 - [ ] Folder rename
 - [ ] Folder deletions (Implement -rf by collecting all items then 1 delete)
