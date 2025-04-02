@@ -3,7 +3,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { MUTATIONS, QUERIES } from "./db/queries";
 import { UTApi } from "uploadthing/server";
-import { cookies } from "next/headers";
 
 const utapi = new UTApi();
 
@@ -13,11 +12,8 @@ async function safelyGetFile(fileId: number) {
     throw new Error("User not authenticated");
   }
   const file = await QUERIES.getFileById(fileId);
-  if (!file) {
+  if (!file || file?.ownerId !== session.userId) {
     throw new Error("File not found");
-  }
-  if (file.ownerId !== session.userId) {
-    throw new Error("File not found"); // User shouldn't know if file exists
   }
   return file;
 }
@@ -41,10 +37,7 @@ export async function renameFolder(folderId: number, newName: string) {
     throw new Error("User not authenticated");
   }
   const folder = await QUERIES.getFolderById(folderId);
-  if (!folder) {
-    throw new Error("Folder not found");
-  }
-  if (folder.ownerId !== session.userId) {
+  if (!folder || folder.ownerId !== session.userId) {
     throw new Error("Folder not found");
   }
   await MUTATIONS.renameFolder(folderId, newName);
