@@ -9,6 +9,9 @@ const utapi = new UTApi();
 
 async function safelyGetFile(fileId: number) {
   const session = await auth();
+  if (!session.userId) {
+    throw new Error("User not authenticated");
+  }
   const file = await QUERIES.getFileById(fileId);
   if (!file) {
     throw new Error("File not found");
@@ -29,6 +32,22 @@ export async function renameFile(fileId: number, newName: string) {
   const dbRenamePromise = MUTATIONS.renameFile(fileId, newName);
   await Promise.all([utRenamePromise, dbRenamePromise]);
 
+  return { success: true };
+}
+
+export async function renameFolder(folderId: number, newName: string) {
+  const session = await auth();
+  if (!session.userId) {
+    throw new Error("User not authenticated");
+  }
+  const folder = await QUERIES.getFolderById(folderId);
+  if (!folder) {
+    throw new Error("Folder not found");
+  }
+  if (folder.ownerId !== session.userId) {
+    throw new Error("Folder not found");
+  }
+  await MUTATIONS.renameFolder(folderId, newName);
   return { success: true };
 }
 

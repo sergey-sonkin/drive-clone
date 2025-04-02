@@ -6,7 +6,6 @@ import {
   folders_table as foldersSchema,
 } from "~/server/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
-import { renameFile } from "../actions";
 
 export const QUERIES = {
   getAllParentsForFolder: async function (folderId: number) {
@@ -117,5 +116,12 @@ export const MUTATIONS = {
       .update(filesSchema)
       .set({ name: newName })
       .where(eq(filesSchema.id, fileId));
+  },
+
+  renameFolder: async function (folderId: number, newName: string) {
+    return await db
+      .update(foldersSchema)
+      .set({ name: newName })
+      .where(eq(foldersSchema.id, folderId));
   },
 };
