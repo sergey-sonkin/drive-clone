@@ -17,9 +17,11 @@
 - [x] File deletion animation
 - [x] Fix header resizing
 - [x] Folder rename
+- [x] Change clicking on "My Drive" to be root folder, remove showing "root"
 
 ## TODO
 
+- [ ] Tidy up "My Drive" to be aligned with drive contents
 - [ ] Folder creations (Server action w/ name + parentID)
 - [ ] Folder deletions (Implement -rf by collecting all items then 1 delete)
 - [ ] Better access control (check if someone is owner before showing folder page if someone is linked to a drive they don't own, send to sign-in!)

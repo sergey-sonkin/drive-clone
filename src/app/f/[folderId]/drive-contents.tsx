@@ -24,21 +24,23 @@ export default function DriveContents(props: {
           <div className="flex items-center">
             <Link
               href={"/f/" + rootId}
-              className="mr-2 text-gray-300 hover:text-white"
+              className="text-gray-300 hover:text-white"
             >
               My Drive
             </Link>
-            {props.parents.map((folder, index) => (
-              <div key={folder.id} className="flex items-center">
-                <ChevronRight className="mx-2 text-gray-500" size={16} />
-                <Link
-                  href={`/f/${folder.id}`}
-                  className="text-gray-300 hover:text-white"
-                >
-                  {folder.name}
-                </Link>
-              </div>
-            ))}
+            {props.parents
+              .filter(folder => folder.id !== rootId)
+              .map((folder, index) => (
+                <div key={folder.id} className="flex items-center">
+                  <ChevronRight className="mx-2 text-gray-500" size={16} />
+                  <Link
+                    href={`/f/${folder.id}`}
+                    className="text-gray-300 hover:text-white"
+                  >
+                    {folder.name}
+                  </Link>
+                </div>
+              ))}
           </div>
           <div className="flex h-8 items-center">
             <SignedOut>
