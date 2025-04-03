@@ -54,3 +54,23 @@ export async function deleteFile(fileId: number) {
 
   return { success: true };
 }
+
+export async function createFolder(parentId: number, name: string) {
+  const session = await auth();
+  if (!session.userId) {
+    throw new Error("User not authenticated");
+  }
+  const folder = await QUERIES.getFolderById(parentId);
+  if (!folder || folder.ownerId !== session.userId) {
+    throw new Error("Folder not found");
+  }
+
+  await MUTATIONS.createFolder({
+    folder: {
+      name: name,
+      parent: parentId,
+    },
+    userId: session.userId,
+  });
+  return { success: true };
+}

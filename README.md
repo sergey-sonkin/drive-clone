@@ -18,17 +18,17 @@
 - [x] Fix header resizing
 - [x] Folder rename
 - [x] Change clicking on "My Drive" to be root folder, remove showing "root"
+- [x] Better breadcrumbs
+- [x] Folder creation
 
 ## TODO
 
-- [ ] Tidy up "My Drive" to be aligned with drive contents
-- [ ] Folder creations (Server action w/ name + parentID)
 - [ ] Folder deletions (Implement -rf by collecting all items then 1 delete)
+- [ ] Prettier upload button
 - [ ] Better access control (check if someone is owner before showing folder page if someone is linked to a drive they don't own, send to sign-in!)
 - [ ] File rename
 - [ ] Make upload button prettier
+- [ ] File/folder sharing!
 - [ ] File view page
 - [ ] Toasts!
-- [ ] Gray out a row while it's being deleted
-
 - [ ] Deploy with sst/opennext
