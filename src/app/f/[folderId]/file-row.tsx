@@ -26,14 +26,19 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { deleteFile, renameFile, renameFolder } from "~/server/actions";
+import {
+  deleteFile,
+  deleteFolder,
+  renameFile,
+  renameFolder,
+} from "~/server/actions";
 import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function DeleteMenuItem({
+function DeleteFileItem({
   file,
   onSuccess,
 }: {
@@ -52,6 +57,46 @@ function DeleteMenuItem({
       onSuccess();
     } catch (error) {
       console.error("Error deleting file:", error);
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <DropdownMenuItem disabled={isDeleting} onClick={handleDelete}>
+      {isDeleting ? (
+        <>
+          <span className="inline-flex h-4 w-4 animate-spin items-center justify-center rounded-full border-2 border-gray-300 border-t-blue-600"></span>
+          Deleting...
+        </>
+      ) : (
+        <>
+          <Trash2Icon className="h-4 w-4" />
+          Delete
+        </>
+      )}
+    </DropdownMenuItem>
+  );
+}
+
+function DeleteFolderItem({
+  folder,
+  onSuccess,
+}: {
+  folder: DB_FolderType;
+  onSuccess: () => void;
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      setIsDeleting(true);
+      await deleteFolder(folder.id);
+      setIsDeleting(false);
+      onSuccess();
+    } catch (error) {
+      console.error("Error deleting folder:", error);
       setIsDeleting(false);
     }
   };
@@ -253,7 +298,7 @@ function EditFileDropDown(props: { file: DB_FileType }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          <DeleteMenuItem file={props.file} onSuccess={handleDeleteSuccess} />
+          <DeleteFileItem file={props.file} onSuccess={handleDeleteSuccess} />
           <RenameFileItem file={props.file} onSuccess={handleDeleteSuccess} />
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -316,6 +361,10 @@ export function EditFolderDropdown(props: { folder: DB_FolderType }) {
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <RenameFolderItem
+            folder={props.folder}
+            onSuccess={handleDeleteSuccess}
+          />
+          <DeleteFolderItem
             folder={props.folder}
             onSuccess={handleDeleteSuccess}
           />

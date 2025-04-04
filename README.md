@@ -21,7 +21,7 @@
 - [x] Better breadcrumbs
 - [x] Folder creation
 - [x] File rename
-- [ ] Folder deletions (Implement -rf by collecting all items then 1 delete)
+- [x] Folder deletions (Implement -rf by collecting all items then 1 delete)
 
 ## TODO
 
@@ -32,3 +32,4 @@
 - [ ] File view page
 - [ ] Toasts!
 - [ ] Deploy with sst/opennext
+- [ ] Refactor folder and file row shared logic
