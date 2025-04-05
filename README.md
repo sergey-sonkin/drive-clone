@@ -22,10 +22,10 @@
 - [x] Folder creation
 - [x] File rename
 - [x] Folder deletions (Implement -rf by collecting all items then 1 delete)
+- [x] Prettier upload button
 
 ## TODO
 
-- [ ] Prettier upload button
 - [ ] Better access control (check if someone is owner before showing folder page if someone is linked to a drive they don't own, send to sign-in!)
 - [ ] Make upload button prettier
 - [ ] File/folder sharing!

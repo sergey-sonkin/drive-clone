@@ -56,7 +56,7 @@ export function NewFolderButton({ folderId }: { folderId: number }) {
               onClick={handleOpenDialog}
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-gray-100 hover:bg-gray-700"
+              className="h-8 w-8 hover:bg-gray-700 rounded-md flex items-center justify-center hover:text-gray-100 text-gray-100"
             >
               <FolderPlus size={16} />
               <span className="sr-only">New Folder</span>
