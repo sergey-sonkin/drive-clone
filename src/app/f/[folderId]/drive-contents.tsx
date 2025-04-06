@@ -80,7 +80,7 @@ export default function DriveContents(props: {
                         container: "w-auto",
                       }}
                       content={{
-                        button({ ready }) {
+                        button({}) {
                           return <Upload className="size-4" />;
                         },
                       }}
