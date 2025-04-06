@@ -24,6 +24,7 @@
 - [x] Folder deletions (Implement -rf by collecting all items then 1 delete)
 - [x] Prettier upload button
 - [x] Better access control (check if someone is owner before showing folder page if someone is linked to a drive they don't own, send to sign-in!)
+- [x] Better size information (in relevant units, not bytes!)
 
 ## TODO
 

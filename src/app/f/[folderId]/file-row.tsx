@@ -34,6 +34,33 @@ import {
 } from "~/server/actions";
 import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
 
+/**
+ * Formats bytes into a human-readable file size
+ * @param bytes - The file size in bytes
+ * @param decimals - Number of decimal places to show (default: 2)
+ * @returns Formatted file size with appropriate unit
+ */
+function formatFileSize(
+  bytes: number | string | null | undefined,
+  decimals = 2,
+): string {
+  if (bytes === null || bytes === undefined || bytes === "") return "0 Bytes";
+
+  // Convert string to number if needed
+  const numBytes = typeof bytes === "string" ? parseInt(bytes, 10) : bytes;
+
+  if (isNaN(numBytes) || numBytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(numBytes) / Math.log(k));
+
+  return (
+    parseFloat((numBytes / Math.pow(k, i)).toFixed(decimals)) + " " + sizes[i]
+  );
+}
+
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -328,7 +355,9 @@ export function FileRow(props: { file: DB_FileType; isLast?: boolean }) {
         <div className="col-span-3 text-gray-400">
           {file.type ? file.type.split("/").pop() || file.type : ""}
         </div>
-        <div className="col-span-2 text-gray-400">{file.size}</div>
+        <div className="col-span-2 text-gray-400">
+          {formatFileSize(file.size)}
+        </div>
 
         <div className="col-span-1 text-gray-400">
           <EditFileDropDown file={file} />
