@@ -18,6 +18,18 @@ async function safelyGetFile(fileId: number) {
   return file;
 }
 
+export async function safelyGetRootFolderForUser() {
+  const session = await auth();
+  if (!session.userId) {
+    throw new Error("User not authenticated");
+  }
+  const rootFolder = await QUERIES.getRootFolderForUser(session.userId);
+  if (!rootFolder) {
+    throw new Error("Root folder not found");
+  }
+  return rootFolder;
+}
+
 export async function renameFile(fileId: number, newName: string) {
   const file = await safelyGetFile(fileId);
 
